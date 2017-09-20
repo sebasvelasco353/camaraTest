@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar color="dark">
+    <ion-title>
+      Kuanji
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+  <ion-card *ngFor="let link of links | async">
+    <img [src]="link.link" alt="">
+    <ion-card-content>
+      <ion-card-title>
+        {{ link.tag1 }}
+      </ion-card-title>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-fab bottom right>
+    <button ion-fab (click)="mostrar_modal()">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
+
+</ion-content>
