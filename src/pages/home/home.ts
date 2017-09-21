@@ -2,17 +2,17 @@ import { Component } from '@angular/core';
 import { NavController, ModalController } from 'ionic-angular';
 import { SubirPage } from '../subir/subir';
 
-// angular firebase stuff
-import { AngularFireDatabase, FirebaseListObservable } from 'angularfire2/database';
+//servicios o providers
+import { CargaArchivosService } from '../../providers/carga-archivos/carga-archivos';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  links: FirebaseListObservable<any[]>;
-  constructor(private modalCtrl: ModalController, private af: AngularFireDatabase) {
-    this.links = af.list('/links');
+
+  constructor(private modalCtrl: ModalController, private _cas: CargaArchivosService) {
+      this._cas.cargar_imagenes();
   }
 
   mostrar_modal(){

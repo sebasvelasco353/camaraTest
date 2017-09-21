@@ -8,7 +8,7 @@
 
 <ion-content padding>
 
-  <ion-card *ngFor="let link of links | async">
+  <ion-card *ngFor="let link of _cas.imagenes">
     <img [src]="link.link" alt="">
     <ion-card-content>
       <ion-card-title>
