@@ -20,6 +20,10 @@ import { firebaseConfig } from '../config/firebase.config';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { ImagePicker } from '@ionic-native/image-picker';
 
+//Servicios / providers
+import { CargaArchivosService  } from '../providers/carga-archivos/carga-archivos';
+
+
 @NgModule({
   declarations: [
     MyApp,
@@ -44,7 +48,8 @@ import { ImagePicker } from '@ionic-native/image-picker';
     SplashScreen,
     Camera,
     ImagePicker,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    CargaArchivosService,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
   ]
 })
 export class AppModule {}

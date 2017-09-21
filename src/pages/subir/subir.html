@@ -11,6 +11,13 @@
       <button ion-button (click)="cerrar_modal()">Cerrar</button>
     </ion-buttons>
     <ion-title>Subir imagen</ion-title>
+
+    <ion-buttons end>
+      <button ion-button [disabled]="img.length < 2 " (click)="crear_link()">
+        Agregar a la BD
+      </button>
+
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>

@@ -1,9 +1,12 @@
 import { Component } from '@angular/core';
-import { ViewController, ToastController, Platform } from 'ionic-angular';
+import { ViewController, ToastController, Platform, LoadingController } from 'ionic-angular';
 
 //plugins
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { ImagePicker, ImagePickerOptions } from '@ionic-native/image-picker';
+
+//servicios / providers
+import { CargaArchivosService } from '../../providers/carga-archivos/carga-archivos';
 
 
 @Component({
@@ -13,11 +16,38 @@ import { ImagePicker, ImagePickerOptions } from '@ionic-native/image-picker';
 export class SubirPage {
 
   imgPreview: string = undefined;
-  img: string = null;
+  img: string = "";
 
   constructor(private viewCtrl: ViewController, private camera: Camera, private ToastCtlr: ToastController,
-    private platform: Platform, private imagePicker: ImagePicker) {
+                        private platform: Platform, private imagePicker: ImagePicker, private _cas: CargaArchivosService,
+                        private loadingCtrl: LoadingController) {
 
+  }
+
+  crear_link(){
+    console.log("subiendo");
+    let archivo = {
+      'link':this.img,
+      'tag1':'lala',
+      'tag3':'lala',
+      'tag2':'lala'
+    };
+
+    let loader = this.loadingCtrl.create({
+      content: "Subiendo"
+    });
+    loader.present();
+
+    this._cas.cargar_imagenes_firebase( archivo ).then(
+      ( ) => {
+          loader.dismiss();
+          this.cerrar_modal();
+      }, //cuando termine de subir
+      ( error )=>{
+        loader.dismiss();
+        this.mostrar_toast("Error al cargar: " + error );
+      }
+     )
   }
 
   cerrar_modal() {
