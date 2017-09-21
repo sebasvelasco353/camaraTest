@@ -18,6 +18,7 @@ import { firebaseConfig } from '../config/firebase.config';
 
 // plugins
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import { ImagePicker } from '@ionic-native/image-picker';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
     StatusBar,
     SplashScreen,
     Camera,
+    ImagePicker,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
