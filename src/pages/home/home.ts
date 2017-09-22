@@ -15,6 +15,16 @@ export class HomePage {
       this._cas.cargar_imagenes();
   }
 
+  cargar_siguientes(infiniteScroll: any){
+    console.log('sgtes');
+    this._cas.cargar_imagenes().then(
+      () => {
+        infiniteScroll.complete();
+      }
+    );
+  }
+
+
   mostrar_modal(){
     let modal = this.modalCtrl.create( SubirPage );
     modal.present();

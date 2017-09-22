@@ -1,6 +1,119 @@
 webpackJsonp([0],{
 
-/***/ 159:
+/***/ 137:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CargaArchivosService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_angularfire2_database__ = __webpack_require__(248);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_firebase__ = __webpack_require__(424);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_firebase___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_firebase__);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+
+var CargaArchivosService = (function () {
+    function CargaArchivosService(af, toastCtrl) {
+        this.af = af;
+        this.toastCtrl = toastCtrl;
+        this.CARPETA_IMAGENES = 'img';
+        this.LINKS = 'links';
+        this.imagenes = [];
+        this.lastKey = undefined;
+    }
+    CargaArchivosService.prototype.cargar_imagenes = function () {
+        //TODO: fix error on infiniteScroll, it only loading 7 images in total
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            _this.af.list('/links', {
+                query: {
+                    limitToLast: 4,
+                    orderByKey: true,
+                    endAt: _this.lastKey
+                }
+            }).subscribe(function (links) {
+                if (_this.lastKey) {
+                    links.pop();
+                }
+                if (links.length == 0) {
+                    console.log("no hay mas");
+                    resolve(false);
+                    return;
+                }
+                _this.lastKey = links[0].$key;
+                for (var i = links.length - 1; i >= 0; i--) {
+                    var link = links[i];
+                    _this.imagenes.push(link);
+                }
+            });
+        });
+    };
+    CargaArchivosService.prototype.cargar_imagenes_firebase = function (archivo) {
+        var _this = this;
+        var promesa = new Promise(function (resolve, reject) {
+            _this.mostrar_toast('Iniciando la carga');
+            //ref storage
+            var storageRef = __WEBPACK_IMPORTED_MODULE_3_firebase__["storage"]().ref();
+            var nombreArchivo = new Date().valueOf(); //el nombre es la fecha
+            var uploadTask = storageRef.child(_this.CARPETA_IMAGENES + "/" + nombreArchivo)
+                .putString(archivo.link, 'base64', { contentType: 'image/jpeg' });
+            uploadTask.on(__WEBPACK_IMPORTED_MODULE_3_firebase__["storage"].TaskEvent.STATE_CHANGED, function (snapshot) { }, //saber el avance del archivo
+            function (error) {
+                console.log("Error al subir ", JSON.stringify(error));
+                _this.mostrar_toast('error al cargar: ' + JSON.stringify(error));
+                reject(error);
+            }, //manejo de errores
+            function () {
+                var url = uploadTask.snapshot.downloadURL;
+                _this.mostrar_toast('Imagen cargada con exito');
+                _this.crear_link_enBd(url);
+                resolve();
+            } //termino proceso
+            );
+        });
+        return promesa;
+    };
+    CargaArchivosService.prototype.crear_link_enBd = function (url) {
+        var link = {
+            link: url,
+            tag1: 'tag',
+            tag2: 'tag',
+            tag3: 'tag'
+        };
+        var $key = this.af.list("/" + this.LINKS).push(link).key;
+        link.$key = $key;
+        this.imagenes.push(link);
+    };
+    CargaArchivosService.prototype.mostrar_toast = function (texto) {
+        this.toastCtrl.create({
+            message: texto,
+            duration: 2500
+        }).present();
+    };
+    return CargaArchivosService;
+}());
+CargaArchivosService = __decorate([
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["B" /* Injectable */])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_angularfire2_database__["a" /* AngularFireDatabase */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_angularfire2_database__["a" /* AngularFireDatabase */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* ToastController */]) === "function" && _b || Object])
+], CargaArchivosService);
+
+var _a, _b;
+//# sourceMappingURL=carga-archivos.js.map
+
+/***/ }),
+
+/***/ 160:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
@@ -13,11 +126,11 @@ function webpackEmptyAsyncContext(req) {
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 159;
+webpackEmptyAsyncContext.id = 160;
 
 /***/ }),
 
-/***/ 200:
+/***/ 201:
 /***/ (function(module, exports) {
 
 function webpackEmptyAsyncContext(req) {
@@ -30,19 +143,19 @@ function webpackEmptyAsyncContext(req) {
 webpackEmptyAsyncContext.keys = function() { return []; };
 webpackEmptyAsyncContext.resolve = webpackEmptyAsyncContext;
 module.exports = webpackEmptyAsyncContext;
-webpackEmptyAsyncContext.id = 200;
+webpackEmptyAsyncContext.id = 201;
 
 /***/ }),
 
-/***/ 243:
+/***/ 244:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return HomePage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__subir_subir__ = __webpack_require__(244);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_carga_archivos_carga_archivos__ = __webpack_require__(247);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__subir_subir__ = __webpack_require__(245);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_carga_archivos_carga_archivos__ = __webpack_require__(137);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -63,6 +176,12 @@ var HomePage = (function () {
         this._cas = _cas;
         this._cas.cargar_imagenes();
     }
+    HomePage.prototype.cargar_siguientes = function (infiniteScroll) {
+        console.log('sgtes');
+        this._cas.cargar_imagenes().then(function () {
+            infiniteScroll.complete();
+        });
+    };
     HomePage.prototype.mostrar_modal = function () {
         var modal = this.modalCtrl.create(__WEBPACK_IMPORTED_MODULE_2__subir_subir__["a" /* SubirPage */]);
         modal.present();
@@ -71,7 +190,7 @@ var HomePage = (function () {
 }());
 HomePage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-home',template:/*ion-inline-start:"E:\Documentos\Universidad\2017-2\PDG2\camaraTest\src\pages\home\home.html"*/'<ion-header>\n\n  <ion-navbar color="dark">\n\n    <ion-title>\n\n      Kuanji\n\n    </ion-title>\n\n  </ion-navbar>\n\n</ion-header>\n\n\n\n<ion-content padding>\n\n\n\n  <ion-card *ngFor="let link of _cas.imagenes">\n\n    <img [src]="link.link" alt="">\n\n    <ion-card-content>\n\n      <ion-card-title>\n\n        {{ link.tag1 }}\n\n      </ion-card-title>\n\n    </ion-card-content>\n\n  </ion-card>\n\n\n\n  <ion-fab bottom right>\n\n    <button ion-fab (click)="mostrar_modal()">\n\n      <ion-icon name="add"></ion-icon>\n\n    </button>\n\n  </ion-fab>\n\n\n\n</ion-content>\n\n'/*ion-inline-end:"E:\Documentos\Universidad\2017-2\PDG2\camaraTest\src\pages\home\home.html"*/
+        selector: 'page-home',template:/*ion-inline-start:"/home/sebastian_v/Documents/universidad/2017-2/pdg2/camaraTest/src/pages/home/home.html"*/'<ion-header>\n  <ion-navbar color="dark">\n    <ion-title>\n      Kuanji\n    </ion-title>\n  </ion-navbar>\n</ion-header>\n\n<ion-content padding>\n\n  <ion-card *ngFor="let link of _cas.imagenes">\n    <img [src]="link.link" alt="">\n    <ion-card-content>\n      <ion-card-title>\n        {{ link.tag1 }}\n      </ion-card-title>\n    </ion-card-content>\n  </ion-card>\n\n  <ion-fab bottom right>\n    <button ion-fab (click)="mostrar_modal()">\n      <ion-icon name="add"></ion-icon>\n    </button>\n  </ion-fab>\n\n  <ion-infinite-scroll (ionInfinite)="cargar_siguientes($event)">\n    <ion-infinite-scroll-content></ion-infinite-scroll-content>\n  </ion-infinite-scroll>\n</ion-content>\n'/*ion-inline-end:"/home/sebastian_v/Documents/universidad/2017-2/pdg2/camaraTest/src/pages/home/home.html"*/
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* ModalController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["e" /* ModalController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__providers_carga_archivos_carga_archivos__["a" /* CargaArchivosService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_carga_archivos_carga_archivos__["a" /* CargaArchivosService */]) === "function" && _b || Object])
 ], HomePage);
@@ -81,16 +200,16 @@ var _a, _b;
 
 /***/ }),
 
-/***/ 244:
+/***/ 245:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SubirPage; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_camera__ = __webpack_require__(245);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_image_picker__ = __webpack_require__(246);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_carga_archivos_carga_archivos__ = __webpack_require__(247);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_camera__ = __webpack_require__(246);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_image_picker__ = __webpack_require__(247);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__providers_carga_archivos_carga_archivos__ = __webpack_require__(137);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -200,7 +319,7 @@ var SubirPage = (function () {
 }());
 SubirPage = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
-        selector: 'page-subir',template:/*ion-inline-start:"E:\Documentos\Universidad\2017-2\PDG2\camaraTest\src\pages\subir\subir.html"*/'<!--\n\n  Generated template for the SubirPage page.\n\n\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n\n  Ionic pages and navigation.\n\n-->\n\n<ion-header>\n\n\n\n  <ion-navbar>\n\n    <ion-buttons>\n\n      <button ion-button (click)="cerrar_modal()">Cerrar</button>\n\n    </ion-buttons>\n\n    <ion-title>Subir imagen</ion-title>\n\n\n\n    <ion-buttons end>\n\n      <button ion-button [disabled]="img.length < 2 " (click)="crear_link()">\n\n        Agregar a la BD\n\n      </button>\n\n\n\n    </ion-buttons>\n\n  </ion-navbar>\n\n\n\n</ion-header>\n\n\n\n\n\n<ion-content padding>\n\n  <ion-list>\n\n    <ion-item *ngIf="imgPreview">\n\n      <img [src]="imgPreview" alt="">\n\n    </ion-item>\n\n  </ion-list>\n\n\n\n  <ion-grid>\n\n    <ion-row>\n\n      <ion-col>\n\n        <button ion-button block icon-left (click)="seleccionar_imagenes()"><ion-icon name="photos">Seleccionar</ion-icon></button>\n\n      </ion-col>\n\n      <ion-col>\n\n        <button ion-button block icon-left (click)="mostrar_camara()"><ion-icon name="camera">Camara</ion-icon></button>\n\n      </ion-col>\n\n    </ion-row>\n\n  </ion-grid>\n\n</ion-content>\n\n'/*ion-inline-end:"E:\Documentos\Universidad\2017-2\PDG2\camaraTest\src\pages\subir\subir.html"*/,
+        selector: 'page-subir',template:/*ion-inline-start:"/home/sebastian_v/Documents/universidad/2017-2/pdg2/camaraTest/src/pages/subir/subir.html"*/'<!--\n  Generated template for the SubirPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n\n  <ion-navbar>\n    <ion-buttons>\n      <button ion-button (click)="cerrar_modal()">Cerrar</button>\n    </ion-buttons>\n    <ion-title>Subir imagen</ion-title>\n\n    <ion-buttons end>\n      <button ion-button [disabled]="img.length < 2 " (click)="crear_link()">\n        Agregar a la BD\n      </button>\n\n    </ion-buttons>\n  </ion-navbar>\n\n</ion-header>\n\n\n<ion-content padding>\n  <ion-list>\n    <ion-item *ngIf="imgPreview">\n      <img [src]="imgPreview" alt="">\n    </ion-item>\n  </ion-list>\n\n  <ion-grid>\n    <ion-row>\n      <ion-col>\n        <button ion-button block icon-left (click)="seleccionar_imagenes()"><ion-icon name="photos">Seleccionar</ion-icon></button>\n      </ion-col>\n      <ion-col>\n        <button ion-button block icon-left (click)="mostrar_camara()"><ion-icon name="camera">Camara</ion-icon></button>\n      </ion-col>\n    </ion-row>\n  </ion-grid>\n</ion-content>\n'/*ion-inline-end:"/home/sebastian_v/Documents/universidad/2017-2/pdg2/camaraTest/src/pages/subir/subir.html"*/,
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* ViewController */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_camera__["a" /* Camera */], __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* ToastController */],
         __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* Platform */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_image_picker__["a" /* ImagePicker */], __WEBPACK_IMPORTED_MODULE_4__providers_carga_archivos_carga_archivos__["a" /* CargaArchivosService */],
@@ -208,119 +327,6 @@ SubirPage = __decorate([
 ], SubirPage);
 
 //# sourceMappingURL=subir.js.map
-
-/***/ }),
-
-/***/ 247:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CargaArchivosService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_angularfire2_database__ = __webpack_require__(248);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_firebase__ = __webpack_require__(424);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_firebase___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_firebase__);
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-
-
-
-var CargaArchivosService = (function () {
-    function CargaArchivosService(af, toastCtrl) {
-        this.af = af;
-        this.toastCtrl = toastCtrl;
-        this.CARPETA_IMAGENES = 'img';
-        this.LINKS = 'links';
-        this.imagenes = [];
-        this.lastKey = undefined;
-    }
-    CargaArchivosService.prototype.cargar_imagenes = function () {
-        var _this = this;
-        var promesa = new Promise(function (resolve, reject) {
-            _this.af.list("/links", {
-                query: {
-                    limitToLast: 4,
-                    orderByKey: true,
-                    endAt: _this.lastKey
-                }
-            }).subscribe(function (links) {
-                if (_this.lastKey) {
-                    links.pop(); //pruebenlo
-                }
-                if (links.length == 0) {
-                    console.log("no hay registros");
-                    resolve(false);
-                    return;
-                }
-                _this.lastKey = links[0].key;
-                for (var i = links.length - 1; i >= 0; i--) {
-                    var link = links[i];
-                    _this.imagenes.push(link);
-                }
-                resolve(true);
-            });
-        });
-    };
-    CargaArchivosService.prototype.cargar_imagenes_firebase = function (archivo) {
-        var _this = this;
-        var promesa = new Promise(function (resolve, reject) {
-            _this.mostrar_toast('Iniciando la carga');
-            //ref storage
-            var storageRef = __WEBPACK_IMPORTED_MODULE_3_firebase__["storage"]().ref();
-            var nombreArchivo = new Date().valueOf(); //el nombre es la fecha
-            var uploadTask = storageRef.child(_this.CARPETA_IMAGENES + "/" + nombreArchivo)
-                .putString(archivo.link, 'base64', { contentType: 'image/jpeg' });
-            uploadTask.on(__WEBPACK_IMPORTED_MODULE_3_firebase__["storage"].TaskEvent.STATE_CHANGED, function (snapshot) { }, //saber el avance del archivo
-            function (error) {
-                console.log("Error al subir ", JSON.stringify(error));
-                _this.mostrar_toast('error al cargar: ' + JSON.stringify(error));
-                reject(error);
-            }, //manejo de errores
-            function () {
-                var url = uploadTask.snapshot.downloadURL;
-                _this.mostrar_toast('Imagen cargada con exito');
-                _this.crear_link_enBd(url);
-                resolve();
-            } //termino proceso
-            );
-        });
-        return promesa;
-    };
-    CargaArchivosService.prototype.crear_link_enBd = function (url) {
-        var link = {
-            link: url,
-            tag1: 'tag',
-            tag2: 'tag',
-            tag3: 'tag'
-        };
-        var $key = this.af.list("/" + this.LINKS).push(link).key;
-        link.$key = $key;
-        this.imagenes.push(link);
-    };
-    CargaArchivosService.prototype.mostrar_toast = function (texto) {
-        this.toastCtrl.create({
-            message: texto,
-            duration: 2500
-        }).present();
-    };
-    return CargaArchivosService;
-}());
-CargaArchivosService = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["B" /* Injectable */])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_angularfire2_database__["a" /* AngularFireDatabase */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_angularfire2_database__["a" /* AngularFireDatabase */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* ToastController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* ToastController */]) === "function" && _b || Object])
-], CargaArchivosService);
-
-var _a, _b;
-//# sourceMappingURL=carga-archivos.js.map
 
 /***/ }),
 
@@ -346,18 +352,18 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_ionic_angular__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(240);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(242);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(241);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ionic_native_status_bar__ = __webpack_require__(243);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(363);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_home_home__ = __webpack_require__(243);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_subir_subir__ = __webpack_require__(244);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__pages_home_home__ = __webpack_require__(244);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__pages_subir_subir__ = __webpack_require__(245);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_angularfire2__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_angularfire2_database__ = __webpack_require__(248);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_angularfire2_auth__ = __webpack_require__(448);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__config_firebase_config__ = __webpack_require__(451);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__ionic_native_camera__ = __webpack_require__(245);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__ionic_native_image_picker__ = __webpack_require__(246);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__providers_carga_archivos_carga_archivos__ = __webpack_require__(247);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_angularfire2_auth__ = __webpack_require__(447);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__config_firebase_config__ = __webpack_require__(450);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__ionic_native_camera__ = __webpack_require__(246);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__ionic_native_image_picker__ = __webpack_require__(247);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__providers_carga_archivos_carga_archivos__ = __webpack_require__(137);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -430,9 +436,9 @@ AppModule = __decorate([
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MyApp; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(242);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(240);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_home_home__ = __webpack_require__(243);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__ = __webpack_require__(243);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__ = __webpack_require__(241);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_home_home__ = __webpack_require__(244);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -460,7 +466,7 @@ var MyApp = (function () {
     return MyApp;
 }());
 MyApp = __decorate([
-    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"E:\Documentos\Universidad\2017-2\PDG2\camaraTest\src\app\app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n\n'/*ion-inline-end:"E:\Documentos\Universidad\2017-2\PDG2\camaraTest\src\app\app.html"*/
+    Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({template:/*ion-inline-start:"/home/sebastian_v/Documents/universidad/2017-2/pdg2/camaraTest/src/app/app.html"*/'<ion-nav [root]="rootPage"></ion-nav>\n'/*ion-inline-end:"/home/sebastian_v/Documents/universidad/2017-2/pdg2/camaraTest/src/app/app.html"*/
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["f" /* Platform */], __WEBPACK_IMPORTED_MODULE_2__ionic_native_status_bar__["a" /* StatusBar */], __WEBPACK_IMPORTED_MODULE_3__ionic_native_splash_screen__["a" /* SplashScreen */]])
 ], MyApp);
@@ -469,7 +475,7 @@ MyApp = __decorate([
 
 /***/ }),
 
-/***/ 451:
+/***/ 450:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

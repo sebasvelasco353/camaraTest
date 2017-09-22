@@ -19,32 +19,32 @@ export class CargaArchivosService {
   }
 
   cargar_imagenes(){
-    let promesa = new Promise( (resolve, reject) =>{
-      this.af.list("/links", {
+
+    //TODO: fix error on infiniteScroll, it only loading 7 images in total
+
+    return new Promise( (resolve, reject) =>{
+      this.af.list('/links', {
         query: {
           limitToLast: 4,
           orderByKey: true,
           endAt: this.lastKey
         }
-
       }).subscribe( links => {
-        if( this.lastKey ){
-          links.pop(); //pruebenlo
+        if(this.lastKey){
+          links.pop();
         }
 
-        if( links.length == 0){
-            console.log("no hay registros");
-            resolve(false);
-            return;
+        if(links.length == 0){
+          console.log("no hay mas");
+          resolve(false);
+          return;
         }
 
-        this.lastKey = links[0].key;
-        for (let i = links.length-1; i>=0; i-- ){
+        this.lastKey = links[0].$key;
+        for(let i = links.length-1; i>=0; i--){
           let link = links[i];
           this.imagenes.push( link );
         }
-
-        resolve(true);
       })
     })
 
